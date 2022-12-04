@@ -2,7 +2,7 @@ package hobin.toyBoard.post.entity;
 
 import hobin.toyBoard.audit.Auditable;
 import hobin.toyBoard.comment.entity.Comment;
-import hobin.toyBoard.member.Member;
+import hobin.toyBoard.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
