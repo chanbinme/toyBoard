@@ -2,7 +2,7 @@ package hobin.toyBoard.like.entity;
 
 import hobin.toyBoard.audit.Auditable;
 import hobin.toyBoard.member.entity.Member;
-import hobin.toyBoard.post.entity.Post;
+import hobin.toyBoard.board.entity.Board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class Like extends Auditable {
     private Long likeId;
     @ManyToOne
     @JoinColumn(name = "POST_ID")
-    private Post post;
+    private Board board;
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
