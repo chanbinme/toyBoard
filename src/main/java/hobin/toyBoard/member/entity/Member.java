@@ -3,7 +3,7 @@ package hobin.toyBoard.member.entity;
 import hobin.toyBoard.audit.Auditable;
 import hobin.toyBoard.comment.entity.Comment;
 import hobin.toyBoard.like.entity.Like;
-import hobin.toyBoard.post.entity.Post;
+import hobin.toyBoard.board.entity.Board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,8 +32,8 @@ public class Member extends Auditable {
     @Column(nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "post")
-    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "board")
+    private List<Board> boards = new ArrayList<>();
     @OneToMany(mappedBy = "like")
     private List<Like> likes = new ArrayList<>();
     @OneToMany(mappedBy = "comment")
