@@ -65,6 +65,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	//Rest Template; Apache HttpComponents
 	implementation 'org.apache.httpcomponents:httpclient'
+	//IOUTils
+	//패키지. 파일 관련 처리 담당
+	implementation 'commons-io:commons-io:2.6'
 }
 
 tasks.named('test') { //tasks.named('A') : `:A라는 task 가 실행된 후~`라는 의미

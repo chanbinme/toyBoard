@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 public class BoardDto {
@@ -24,17 +23,15 @@ public class BoardDto {
         @NotBlank(message = "내용을 입력하세요")
         private String content;
 
+        private Member member;
     }
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
-
         private Long boardId;
-
         private String title;
-
         private String content;
 
         public void setBoardId(Long boardId) {
@@ -51,6 +48,5 @@ public class BoardDto {
         private String title;
         private String content;
         private List<Comment> comments;
-        private String writer;
     }
 }
