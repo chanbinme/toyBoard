@@ -16,7 +16,17 @@ public class Address {
     String city;    // 도시
     String street;  // 구
 
-    @Column(name = "address_detail")
-    String detail;  // 상세 주소
     String zipcode; // 우편 번호
+
+    public void changeCity(String city) {
+        this.city = city;
+    }
+
+    public void changeStreet(String street) {
+        this.street = street;
+    }
+
+    public void changeZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
 }

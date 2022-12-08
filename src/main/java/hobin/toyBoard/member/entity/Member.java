@@ -4,17 +4,16 @@ import hobin.toyBoard.audit.BaseTimeEntity;
 import hobin.toyBoard.comment.entity.Comment;
 import hobin.toyBoard.like.entity.Like;
 import hobin.toyBoard.board.entity.Board;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@Getter
+@AllArgsConstructor
 @Setter
+@Getter
 @Entity
 public class Member extends BaseTimeEntity {
     @Id
@@ -48,6 +47,33 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changeStatus(MemberStatus memberStatus) {
+        this.memberStatus = memberStatus;
+    }
+
+    public void changeAddressCity(String city) {
+        this.address.changeCity(city);
+    }
+
+    public void changeAddressStreet(String street) {
+        this.address.changeStreet(street);
+    }
+
+    public void changeAddressZipcode(String zipcode) {
+        this.address.changeZipcode(zipcode);
+    }
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),

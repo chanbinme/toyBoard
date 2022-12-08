@@ -43,7 +43,7 @@ public class BoardService {
 
     @Transactional
     public Board updateBoard(Board board) {
-        Board findBoard = verifiedBoard(board.getBoardId());
+        Board findBoard = findVerifiedBoard(board.getBoardId());
 
         Optional.ofNullable(board.getTitle())
                         .ifPresent(title -> findBoard.changeTitle(title));
@@ -54,7 +54,7 @@ public class BoardService {
     }
 
     public Board findBoard(Long boardId) {
-        return verifiedBoard(boardId);
+        return findVerifiedBoard(boardId);
     }
 
     public Page<Board> findBoards(int page, int size) {
@@ -63,14 +63,15 @@ public class BoardService {
 
     @Transactional
     public void deleteBoard(Board board) {
-        Board findBoard = verifiedBoard(board.getBoardId());
+        Board findBoard = findVerifiedBoard(board.getBoardId());
         boardRepository.delete(findBoard);
     }
 
-    public Board verifiedBoard(Long boardId) {
+    public Board findVerifiedBoard(Long boardId) {
         Board findBoard = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
         return findBoard;
     }
+
 }
