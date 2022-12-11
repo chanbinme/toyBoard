@@ -6,11 +6,16 @@ import hobin.toyBoard.member.entity.Member;
 import hobin.toyBoard.member.mapper.MemberMapper;
 import hobin.toyBoard.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +23,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
-public class memberController {
+@Slf4j
+@Validated
+public class MemberController {
 
     private final MemberService memberService;
     private final MemberMapper mapper;
@@ -26,7 +33,8 @@ public class memberController {
     @PostMapping
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post memberPostDto) {
         Member member = mapper.memberPostDtoToMember(memberPostDto);
-        member.changeAddress(memberPostDto.getCity(), memberPostDto.getStreet(), memberPostDto.getZipcode());
+        member.createAddress(memberPostDto.getCity(), memberPostDto.getStreet(), memberPostDto.getZipcode());
+        member.changeStatus(Member.MemberStatus.MEMBER_ACTIVE);
         Member saveMember = memberService.createMember(member);
 
         return new ResponseEntity<>(mapper.memberToMemberResponseDto(saveMember), HttpStatus.CREATED);
@@ -36,7 +44,11 @@ public class memberController {
     public ResponseEntity patchMember(@PathVariable("member-id") @Positive Long memberId,
                                       @Valid @RequestBody MemberDto.Patch memberPatchDto) {
         memberPatchDto.setMemberId(memberId);
-        Member updateMember = memberService.updateMember(mapper.memberPatchDtoToMember(memberPatchDto));
+        Member member = mapper.memberPatchDtoToMember(memberPatchDto);
+        member.createAddress(memberPatchDto.getCity(), memberPatchDto.getStreet(), memberPatchDto.getZipcode());
+
+
+        Member updateMember = memberService.updateMember(member);
 
         return new ResponseEntity<>(mapper.memberToMemberResponseDto(updateMember), HttpStatus.OK);
     }

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class CommentDto {
 
     @Getter
-    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
         @NotBlank(message = "댓글이 공백이 아니어야 합니다.")
@@ -30,7 +29,6 @@ public class CommentDto {
     @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
-
         private Long commentId;
         private String writer;
         private String content;

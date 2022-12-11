@@ -4,12 +4,10 @@ import hobin.toyBoard.member.entity.Address;
 import hobin.toyBoard.member.entity.Member;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Optional;
 
 public class MemberDto {
 
@@ -22,7 +20,7 @@ public class MemberDto {
         private String name;
 
         @NotBlank(message = "이메일을 입력해주세요.")
-        @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
+        @Email
         private String email;
 
         @NotBlank(message = "비밀번호를 입력해주세요.")
@@ -86,7 +84,7 @@ public class MemberDto {
 
         private String nickname;
 
-        private Member.MemberStatus memberStatus;
+        private Member.MemberStatus memberStatus = Member.MemberStatus.MEMBER_ACTIVE;
 
         private Address address;
     }

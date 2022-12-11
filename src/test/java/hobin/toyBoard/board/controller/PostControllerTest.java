@@ -29,7 +29,7 @@ class PostControllerTest {
     private BoardMapper mapper;
 
     @Test
-    public void () throws Exception {
+    public void Mame() throws Exception {
         // given
 
         // when

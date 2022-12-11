@@ -2,7 +2,9 @@ package hobin.toyBoard.board.service;
 
 import hobin.toyBoard.board.entity.Board;
 import hobin.toyBoard.board.repository.BoardRepository;
-import hobin.toyBoard.member.entity.Member;
+import hobin.toyBoard.exception.BussinessLogicException;
+import hobin.toyBoard.exception.ExceptionCode;
+import hobin.toyBoard.member.service.MemberService;
 import hobin.toyBoard.photo.entity.Photo;
 import hobin.toyBoard.photo.handler.FileHandler;
 import hobin.toyBoard.photo.repository.PhotoRepository;
@@ -10,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +27,12 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final PhotoRepository photoRepository;
+    private final MemberService memberService;
     private final FileHandler fileHandler;
 
     @Transactional
-    public Board createBoard(Board board, List<MultipartFile> files)throws Exception {
+    public Board createBoard(@Positive Long memberId, Board board, List<MultipartFile> files)throws Exception {
+        board.addMember(memberService.findMember(memberId));
         List<Photo> photos = fileHandler.parseFileInfo(files);
 
         // 파일이 존재할 때에만 처리
@@ -68,10 +72,8 @@ public class BoardService {
     }
 
     public Board findVerifiedBoard(Long boardId) {
-        Board findBoard = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
-        return findBoard;
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BussinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
     }
-
 }

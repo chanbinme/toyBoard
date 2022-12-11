@@ -7,9 +7,11 @@ import hobin.toyBoard.comment.service.CommentService;
 import hobin.toyBoard.member.entity.Member;
 import hobin.toyBoard.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,11 +21,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comments")
+@Validated
+@Slf4j
 public class CommentController {
 
     private final CommentMapper mapper;
     private final CommentService commentService;
-    private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity postComment(
@@ -31,6 +34,7 @@ public class CommentController {
             @RequestParam("boardId") @Positive Long boardId,
             @Valid @RequestBody CommentDto.Post commnetPostDto) {
         Comment saveComment = commentService.createComment(mapper.CommentPostDtoToComment(commnetPostDto), memberId, boardId);
+        log.info(saveComment.getCommentId().toString());
         return new ResponseEntity<>(mapper.CommentToCommentResponseDto(saveComment), HttpStatus.CREATED);
     }
 

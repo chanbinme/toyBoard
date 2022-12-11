@@ -6,12 +6,12 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BoardDto {
 
     @Getter
     @AllArgsConstructor
-    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
 
@@ -43,6 +43,5 @@ public class BoardDto {
         private Long boardId;
         private String title;
         private String content;
-        private List<Comment> comments;
     }
 }

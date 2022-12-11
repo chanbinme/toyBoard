@@ -37,8 +37,7 @@ public class TxConfig {
         txFindAttribute.setReadOnly(true);
 
         Map<String, TransactionAttribute> txMethods = new HashMap<>();
-        txMethods.put("findMember", txFindAttribute);
-        txMethods.put("findAll", txFindAttribute);
+        txMethods.put("find*", txFindAttribute);
         txMethods.put("*", txAttribute);
 
         txAttributeSource.setNameMap(txMethods);
@@ -50,6 +49,9 @@ public class TxConfig {
     public Advisor txAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("execution(* hobin.toyBoard.member.service." + "MemberService.*(..))");
+        pointcut.setExpression("execution(* hobin.toyBoard.board.service." + "BoardService.*(..))");
+        pointcut.setExpression("execution(* hobin.toyBoard.comment.service." + "CommentService.*(..))");
+        pointcut.setExpression("execution(* hobin.toyBoard.like.service." + "LikeService.*(..))");
 
         return new DefaultPointcutAdvisor(pointcut, txAdvice());
     }
