@@ -24,15 +24,8 @@ class BoardServiceTest {
     @Test
     public void createPostTest() throws Exception {
         // given
-        Board board = Board.builder()
-                .boardId(1L)
-                .content("너무 너무 행복했다.")
-                .member(new Member()).build();
-
-        given(boardRepository.save(Mockito.any(Board.class))).willReturn(board);
 
         // when
-        Long boardId = boardService.createBoard(board).getBoardId();
 
         // then
 

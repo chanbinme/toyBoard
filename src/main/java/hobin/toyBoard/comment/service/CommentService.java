@@ -1,11 +1,14 @@
 package hobin.toyBoard.comment.service;
 
+import hobin.toyBoard.board.entity.Board;
+import hobin.toyBoard.board.service.BoardService;
 import hobin.toyBoard.comment.entity.Comment;
 import hobin.toyBoard.comment.repository.CommentRepository;
+import hobin.toyBoard.member.entity.Member;
+import hobin.toyBoard.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +21,15 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final MemberService memberService;
+    private final BoardService boardService;
 
     @Transactional
-    public Comment createComment(Comment comment) {
+    public Comment createComment(Comment comment, Long memberId, Long boardId) {
+        Member findMember = memberService.findMember(memberId);
+        Board findBoard = boardService.findBoard(boardId);
+
+        comment.createComment(findMember, findBoard);
         return commentRepository.save(comment);
     }
 

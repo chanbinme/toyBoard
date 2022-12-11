@@ -4,6 +4,8 @@ import hobin.toyBoard.comment.dto.CommentDto;
 import hobin.toyBoard.comment.entity.Comment;
 import hobin.toyBoard.comment.mapper.CommentMapper;
 import hobin.toyBoard.comment.service.CommentService;
+import hobin.toyBoard.member.entity.Member;
+import hobin.toyBoard.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,14 @@ public class CommentController {
 
     private final CommentMapper mapper;
     private final CommentService commentService;
+    private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity postComment(@Valid @RequestBody CommentDto.Post commnetPostDto) {
-        Comment saveComment = commentService.createComment(mapper.CommentPostDtoToComment(commnetPostDto));
+    public ResponseEntity postComment(
+            @RequestParam("memberId") @Positive Long memberId,
+            @RequestParam("boardId") @Positive Long boardId,
+            @Valid @RequestBody CommentDto.Post commnetPostDto) {
+        Comment saveComment = commentService.createComment(mapper.CommentPostDtoToComment(commnetPostDto), memberId, boardId);
         return new ResponseEntity<>(mapper.CommentToCommentResponseDto(saveComment), HttpStatus.CREATED);
     }
 
