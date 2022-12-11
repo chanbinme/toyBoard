@@ -63,6 +63,14 @@ public class Member extends BaseTimeEntity {
         this.memberStatus = memberStatus;
     }
 
+    public void changeAddress(String city, String street, String zipcode) {
+        Address address = new Address();
+        address.changeCity(city);
+        address.changeStreet(street);
+        address.changeZipcode(zipcode);
+        this.address = address;
+    }
+
     public void changeAddressCity(String city) {
         this.address.changeCity(city);
     }

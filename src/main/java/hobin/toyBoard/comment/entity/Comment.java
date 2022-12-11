@@ -29,7 +29,16 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+    @Column(nullable = false)
+    private String writer;
+
     public void changeContent(String content) {
         this.content = content;
+    }
+
+    public void createComment(Member member, Board board) {
+        this.member = member;
+        this.board = board;
+        writer = member.getNickname();
     }
 }

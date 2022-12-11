@@ -33,11 +33,14 @@ public class MemberDto {
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
         private String nickname;
 
-//        @NotBlank(message = "회원 상태를 입력해주세요.")
-//        private Member.MemberStatus memberStatus = Member.MemberStatus.MEMBER_ACTIVE;
-//
-//        @NotBlank(message = "주소를 입력해주세요.")
-//        private Address address;
+        @NotBlank(message = "주소를 입력해주세요.")
+        private String city;
+
+        @NotBlank(message = "주소를 입력해주세요.")
+        private String street;
+
+        @NotBlank(message = "주소를 입력해주세요.")
+        private String zipcode;
     }
 
     @Getter
@@ -57,7 +60,11 @@ public class MemberDto {
 
         private Member.MemberStatus memberStatus;
 
-        private Address address;
+        private String city;
+
+        private String street;
+
+        private String zipcode;
 
         public void setMemberId(Long memberId) {
             this.memberId = memberId;
@@ -82,6 +89,5 @@ public class MemberDto {
         private Member.MemberStatus memberStatus;
 
         private Address address;
-
     }
 }

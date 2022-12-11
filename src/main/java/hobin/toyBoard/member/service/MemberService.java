@@ -13,13 +13,13 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    @Transactional
+//    @Transactional
     public Member createMember(Member member) {
-//        verifyExistMember(member.getMemberId());
+        verifyExistMember(member.getEmail());
         return memberRepository.save(member);
     }
 
@@ -32,7 +32,7 @@ public class MemberService {
                 Sort.by("memberId").descending()));
     }
 
-    @Transactional
+//    @Transactional
     public Member updateMember(Member member) {
         Member findMember = findVerifiedMember(member.getMemberId());
         Optional.ofNullable(member.getName())
@@ -43,23 +43,23 @@ public class MemberService {
                 .ifPresent(nickname -> findMember.changeNickname(nickname));
 //        Optional.ofNullable(member.getMemberStatus())
 //                .ifPresent(memberStatus -> findMember.changeStatus(memberStatus));
-//        Optional.ofNullable(member.getAddress().getCity())
-//                .ifPresent(city -> findMember.changeAddressCity(city));
-//        Optional.ofNullable(member.getAddress().getStreet())
-//                .ifPresent(street -> findMember.changeAddressStreet(street));
-//        Optional.ofNullable(member.getAddress().getZipcode())
-//                .ifPresent(zipcode -> findMember.changeAddressZipcode(zipcode));
+        Optional.ofNullable(member.getAddress().getCity())
+                .ifPresent(city -> findMember.changeAddressCity(city));
+        Optional.ofNullable(member.getAddress().getStreet())
+                .ifPresent(street -> findMember.changeAddressStreet(street));
+        Optional.ofNullable(member.getAddress().getZipcode())
+                .ifPresent(zipcode -> findMember.changeAddressZipcode(zipcode));
 
         return findMember;
     }
 
-    @Transactional
+//    @Transactional
     public void deleteMember(Long memberId) {
         memberRepository.delete(findVerifiedMember(memberId));
     }
 
-    public void verifyExistMember(Long memberId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
+    public void verifyExistMember(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
         if (optionalMember.isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }

@@ -3,7 +3,6 @@ package hobin.toyBoard.photo.handler;
 import hobin.toyBoard.photo.dto.PhotoDto;
 import hobin.toyBoard.photo.entity.Photo;
 import hobin.toyBoard.photo.mapper.PhotoMapper;
-import hobin.toyBoard.photo.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -22,7 +21,6 @@ import java.util.List;
 public class FileHandler {
 
     private final PhotoMapper mapper;
-    private final PhotoService photoService;
 
     public List<Photo> parseFileInfo(List<MultipartFile> multipartFiles) throws Exception {
         // 반환할 파일 리스트

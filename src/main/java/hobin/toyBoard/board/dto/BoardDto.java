@@ -2,10 +2,7 @@ package hobin.toyBoard.board.dto;
 
 import hobin.toyBoard.comment.entity.Comment;
 import hobin.toyBoard.member.entity.Member;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -14,6 +11,7 @@ public class BoardDto {
 
     @Getter
     @AllArgsConstructor
+    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Post {
 
@@ -22,8 +20,6 @@ public class BoardDto {
 
         @NotBlank(message = "내용을 입력하세요")
         private String content;
-
-        private Member member;
     }
 
     @Getter

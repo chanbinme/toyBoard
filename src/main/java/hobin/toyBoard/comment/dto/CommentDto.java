@@ -16,9 +16,6 @@ public class CommentDto {
     public static class Post {
         @NotBlank(message = "댓글이 공백이 아니어야 합니다.")
         private String content;
-
-        @NotBlank
-        private String writier;
     }
 
     @Getter
@@ -34,10 +31,8 @@ public class CommentDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
 
-        private Long contentId;
-
-        private String content;
-
+        private Long commentId;
         private String writer;
+        private String content;
     }
 }

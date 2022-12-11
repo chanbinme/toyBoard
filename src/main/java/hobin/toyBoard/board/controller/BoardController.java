@@ -37,7 +37,7 @@ public class BoardController {
      */
     @PostMapping
     public ResponseEntity postBoard(@RequestPart(value = "image", required = false) List<MultipartFile> files,
-                                    @Valid @RequestPart(value = "boardPostDto") BoardDto.Post boardPostDto) throws Exception {
+                                    @RequestPart(value = "boardPostDto") BoardDto.Post boardPostDto) throws Exception {
         Board saveBoard = boardService.createBoard(mapper.boardPostToBoard(boardPostDto), files);
         return new ResponseEntity<>(mapper.boardToBoardResponse(saveBoard), HttpStatus.CREATED);
     }

@@ -25,7 +25,9 @@ public class memberController {
 
     @PostMapping
     public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post memberPostDto) {
-        Member saveMember = memberService.createMember(mapper.memberPostDtoToMember(memberPostDto));
+        Member member = mapper.memberPostDtoToMember(memberPostDto);
+        member.changeAddress(memberPostDto.getCity(), memberPostDto.getStreet(), memberPostDto.getZipcode());
+        Member saveMember = memberService.createMember(member);
 
         return new ResponseEntity<>(mapper.memberToMemberResponseDto(saveMember), HttpStatus.CREATED);
     }
