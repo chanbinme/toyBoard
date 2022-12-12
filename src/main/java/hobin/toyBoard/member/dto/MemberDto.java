@@ -4,10 +4,7 @@ import hobin.toyBoard.member.entity.Address;
 import hobin.toyBoard.member.entity.Member;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -22,7 +19,7 @@ public class MemberDto {
         private String name;
 
         @NotBlank(message = "이메일을 입력해주세요.")
-        @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
+        @Email
         private String email;
 
         @NotBlank(message = "비밀번호를 입력해주세요.")
@@ -72,8 +69,6 @@ public class MemberDto {
     }
 
     @Getter
-    @Builder
-    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
         private Long memberId;
@@ -86,8 +81,28 @@ public class MemberDto {
 
         private String nickname;
 
-        private Member.MemberStatus memberStatus;
+        private String memberStatus;
 
         private Address address;
+
+        private int uploadedBoard;
+
+        private int allCommentsCount;
+
+        private int allLikesCount;
+
+        @Builder
+        public Response(Member member) {
+            this.memberId = member.getMemberId();
+            this.name = member.getName();
+            this.email = member.getEmail();
+            this.password = member.getPassword();
+            this.nickname = member.getNickname();
+            this.memberStatus = member.getMemberStatus().getStatus();
+            this.address = member.getAddress();
+            this.uploadedBoard = member.getBoards() == null ? 0 : member.getBoards().size();
+            this.allCommentsCount = member.getComments() == null ? 0 : member.getComments().size();
+            this.allLikesCount = member.getLikes() == null ? 0 : member.getLikes().size();
+        }
     }
 }

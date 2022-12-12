@@ -6,7 +6,6 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
@@ -17,7 +16,9 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
+
+// 제대로 적용 안됨 추후 수정
+//@Configuration
 @RequiredArgsConstructor
 public class TxConfig {
     private final TransactionManager transactionManager;
@@ -37,8 +38,7 @@ public class TxConfig {
         txFindAttribute.setReadOnly(true);
 
         Map<String, TransactionAttribute> txMethods = new HashMap<>();
-        txMethods.put("findMember", txFindAttribute);
-        txMethods.put("findAll", txFindAttribute);
+        txMethods.put("find*", txFindAttribute);
         txMethods.put("*", txAttribute);
 
         txAttributeSource.setNameMap(txMethods);
@@ -50,6 +50,9 @@ public class TxConfig {
     public Advisor txAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("execution(* hobin.toyBoard.member.service." + "MemberService.*(..))");
+        pointcut.setExpression("execution(* hobin.toyBoard.board.service." + "BoardService.*(..))");
+        pointcut.setExpression("execution(* hobin.toyBoard.comment.service." + "CommentService.*(..))");
+        pointcut.setExpression("execution(* hobin.toyBoard.like.service." + "LikeService.*(..))");
 
         return new DefaultPointcutAdvisor(pointcut, txAdvice());
     }

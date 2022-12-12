@@ -1,10 +1,12 @@
 package hobin.toyBoard.photo.handler;
 
+import hobin.toyBoard.board.entity.Board;
 import hobin.toyBoard.photo.dto.PhotoDto;
 import hobin.toyBoard.photo.entity.Photo;
 import hobin.toyBoard.photo.mapper.PhotoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,11 +20,12 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class FileHandler {
 
     private final PhotoMapper mapper;
 
-    public List<Photo> parseFileInfo(List<MultipartFile> multipartFiles) throws Exception {
+    public List<Photo> parseFileInfo(Board board, List<MultipartFile> multipartFiles) throws Exception {
         // 반환할 파일 리스트
         List<Photo> fileList = new ArrayList<>();
 
@@ -73,14 +76,19 @@ public class FileHandler {
                 String new_file_name = System.nanoTime() + originalFileExtenstion;
 
                 // 파일 DTO 생성
-                PhotoDto.Post photoDto = PhotoDto.Post.builder()
+                PhotoDto photoDto = PhotoDto.builder()
                         .origFileName(multipartFile.getOriginalFilename())
                         .filePath(path + File.separator + new_file_name)
                         .fileSize(multipartFile.getSize())
                         .build();
 
                 // 파일 DTO 이용하여 Photo 엔티티 생성
-                Photo photo = mapper.photoPostDtoToPhoto(photoDto);
+                Photo photo = mapper.photoDtoToPhoto(photoDto);
+
+//                // 게시글에 존재하지 않으면 -> 게시글에 사진 정보 저장
+//                if (board.getBoardId() != null) {
+//                    photo.setBoard(board);
+//                }
 
                 // 생성 후 리스트에 추가
                 fileList.add(photo);

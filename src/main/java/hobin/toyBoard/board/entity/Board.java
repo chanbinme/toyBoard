@@ -10,14 +10,16 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;
 
     @Column(length = 100, nullable = false)
@@ -36,21 +38,33 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
+    // OphanRemoval이 적용할지 추후 확인
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Photo> photos = new ArrayList<>();
 
-    public void changeTitle(String title) {
-        this.title = title;
-    }
-    public void changeContent(String content) {
-        this.content = content;
+    public void addMember(Member member) {
+        this.member = member;
+        if (!this.member.getBoards().contains(this)) {
+            this.member.addBoard(this);
+        }
     }
 
+    public void changeBoard(String title, String content) {
+        Optional.ofNullable(title)
+                .ifPresent(changeTitle -> this.title = changeTitle);
+        Optional.ofNullable(content)
+                .ifPresent(changeContent -> this.content = changeContent);
+    }
+
+
     @Builder
-    public Board(String title, String content, Member member) {
+    public Board(Long boardId, String title, String content, Member member, List<Comment> comments, List<Like> likes) {
+        this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.member = member;
+        this.comments = comments;
+        this.likes = likes;
     }
 
     // Board에서 파일을 처리하기 위해

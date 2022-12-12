@@ -3,15 +3,14 @@ package hobin.toyBoard.like.entity;
 import hobin.toyBoard.audit.BaseTimeEntity;
 import hobin.toyBoard.member.entity.Member;
 import hobin.toyBoard.board.entity.Board;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
-@Setter
 @Entity
 @Table(name = "likes")
 public class Like extends BaseTimeEntity {

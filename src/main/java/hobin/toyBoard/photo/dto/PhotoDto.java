@@ -1,24 +1,17 @@
 package hobin.toyBoard.photo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import hobin.toyBoard.board.entity.Board;
+import lombok.*;
 
 import java.io.File;
+import java.util.List;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PhotoDto {
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class Post {
-        private String origFileName;
-        private String filePath;
-        private Long fileSize;
-    }
-
-    public static class Response {
-    }
+    private String origFileName;
+    private String filePath;
+    private Long fileSize;
 }

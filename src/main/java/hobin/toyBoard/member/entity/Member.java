@@ -9,10 +9,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Setter
+@Builder
 @Getter
 @Entity
 public class Member extends BaseTimeEntity {
@@ -34,7 +35,7 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    private MemberStatus memberStatus = MemberStatus.MEMBER_ACTIVE;
+    private MemberStatus memberStatus;
 
     @Embedded
     private Address address;
@@ -48,22 +49,15 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    public void changeName(String name) {
-        this.name = name;
-    }
-
-    public void changePassword(String password) {
-        this.password = password;
-    }
-    public void changeNickname(String nickname) {
-        this.nickname = nickname;
+    public void addBoard(Board board) {
+        this.boards.add(board);
     }
 
     public void changeStatus(MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
     }
 
-    public void changeAddress(String city, String street, String zipcode) {
+    public void createAddress(String city, String street, String zipcode) {
         Address address = new Address();
         address.changeCity(city);
         address.changeStreet(street);
@@ -71,16 +65,21 @@ public class Member extends BaseTimeEntity {
         this.address = address;
     }
 
-    public void changeAddressCity(String city) {
-        this.address.changeCity(city);
-    }
-
-    public void changeAddressStreet(String street) {
-        this.address.changeStreet(street);
-    }
-
-    public void changeAddressZipcode(String zipcode) {
-        this.address.changeZipcode(zipcode);
+    public void changeMember(Member member) {
+        Optional.ofNullable(member.getName())
+                .ifPresent(name -> this.name = name);
+        Optional.ofNullable(member.getPassword())
+                .ifPresent(password -> this.password = password);
+        Optional.ofNullable(member.getNickname())
+                .ifPresent(nickname -> this.nickname = nickname);
+        Optional.ofNullable(member.getMemberStatus())
+                        .ifPresent(status -> this.memberStatus = status);
+        Optional.ofNullable(member.getAddress().getCity())
+                .ifPresent(this.address::changeCity);
+        Optional.ofNullable(member.getAddress().getStreet())
+                .ifPresent(this.address::changeStreet);
+        Optional.ofNullable(member.getAddress().getZipcode())
+                .ifPresent(this.address::changeZipcode);
     }
 
     public enum MemberStatus {
