@@ -15,9 +15,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
 
+    @Transactional
     public Member createMember(Member member) {
         verifyExistMember(member.getEmail());
         return memberRepository.save(member);
@@ -32,19 +34,21 @@ public class MemberService {
                 Sort.by("memberId").descending()));
     }
 
+    @Transactional
     public Member updateMember(Member member) {
         Member findMember = findVerifiedMember(member.getMemberId());
-        Optional.ofNullable(member.getName())
-                .ifPresent(name -> findMember.changeName(name));
-        Optional.ofNullable(member.getPassword())
-                .ifPresent(password -> findMember.changePassword(password));
-        Optional.ofNullable(member.getNickname())
-                .ifPresent(nickname -> findMember.changeNickname(nickname));
-        findMember.changeAddress(member.getAddress().getCity(), member.getAddress().getStreet(), member.getAddress().getZipcode());
-
+//        Optional.ofNullable(member.getName())
+//                .ifPresent(name -> findMember.changeName(name));
+//        Optional.ofNullable(member.getPassword())
+//                .ifPresent(password -> findMember.changePassword(password));
+//        Optional.ofNullable(member.getNickname())
+//                .ifPresent(nickname -> findMember.changeNickname(nickname));
+//        findMember.changeAddress(member.getAddress().getCity(), member.getAddress().getStreet(), member.getAddress().getZipcode());
+        findMember.changeMember(member);
         return findMember;
     }
 
+    @Transactional
     public void deleteMember(Long memberId) {
         memberRepository.delete(findVerifiedMember(memberId));
     }

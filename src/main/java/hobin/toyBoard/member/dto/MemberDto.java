@@ -7,7 +7,6 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.Optional;
 
 public class MemberDto {
 
@@ -70,8 +69,6 @@ public class MemberDto {
     }
 
     @Getter
-    @Builder
-    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
         private Long memberId;
@@ -84,8 +81,28 @@ public class MemberDto {
 
         private String nickname;
 
-        private Member.MemberStatus memberStatus = Member.MemberStatus.MEMBER_ACTIVE;
+        private String memberStatus;
 
         private Address address;
+
+        private int uploadedBoard;
+
+        private int allCommentsCount;
+
+        private int allLikesCount;
+
+        @Builder
+        public Response(Member member) {
+            this.memberId = member.getMemberId();
+            this.name = member.getName();
+            this.email = member.getEmail();
+            this.password = member.getPassword();
+            this.nickname = member.getNickname();
+            this.memberStatus = member.getMemberStatus().getStatus();
+            this.address = member.getAddress();
+            this.uploadedBoard = member.getBoards() == null ? 0 : member.getBoards().size();
+            this.allCommentsCount = member.getComments() == null ? 0 : member.getComments().size();
+            this.allLikesCount = member.getLikes() == null ? 0 : member.getLikes().size();
+        }
     }
 }

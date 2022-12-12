@@ -21,12 +21,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final MemberService memberService;
     private final BoardService boardService;
 
+    @Transactional
     public Comment createComment(Comment comment, Long memberId, Long boardId) {
         Member findMember = memberService.findMember(memberId);
         Board findBoard = boardService.findBoard(boardId);
@@ -35,6 +37,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    @Transactional
     public Comment updateComment(Comment comment) {
         return commentRepository.save(findVerifiedComment(comment.getCommentId()));
     }
@@ -44,11 +47,11 @@ public class CommentService {
     }
 
     public Page<Comment> findAll(int page, int size) {
-
         return commentRepository.findAll(PageRequest.of(page - 1, size,
                 Sort.by("commentId").descending()));
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.delete(findVerifiedComment(commentId));
     }

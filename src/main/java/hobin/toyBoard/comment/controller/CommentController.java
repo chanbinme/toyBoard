@@ -52,8 +52,8 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity getComments(@PathVariable("page") @Positive int page,
-                                      @PathVariable("size") @Positive int size) {
+    public ResponseEntity getComments(@RequestParam("page") @Positive int page,
+                                      @RequestParam("size") @Positive int size) {
         List<Comment> findAll = commentService.findAll(page, size).getContent();
         return new ResponseEntity<>(mapper.CommentsToCommentResponseDtos(findAll), HttpStatus.OK);
     }

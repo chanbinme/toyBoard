@@ -53,17 +53,6 @@ public class Member extends BaseTimeEntity {
         this.boards.add(board);
     }
 
-    public void changeName(String name) {
-        this.name = name;
-    }
-
-    public void changePassword(String password) {
-        this.password = password;
-    }
-    public void changeNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     public void changeStatus(MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
     }
@@ -76,18 +65,22 @@ public class Member extends BaseTimeEntity {
         this.address = address;
     }
 
-    public void changeAddress(String city, String street, String zipcode) {
-        Address changeAddress = this.address;
-        Optional.ofNullable(city)
-                .ifPresent(changeCity -> changeAddress.changeCity(changeCity));
-        Optional.ofNullable(street)
-                .ifPresent(changeStreet -> changeAddress.changeStreet(changeStreet));
-        Optional.ofNullable(zipcode)
-                .ifPresent(changeZipcode -> changeAddress.changeZipcode(changeZipcode));
-
-        this.address = changeAddress;
+    public void changeMember(Member member) {
+        Optional.ofNullable(member.getName())
+                .ifPresent(name -> this.name = name);
+        Optional.ofNullable(member.getPassword())
+                .ifPresent(password -> this.password = password);
+        Optional.ofNullable(member.getNickname())
+                .ifPresent(nickname -> this.nickname = nickname);
+        Optional.ofNullable(member.getMemberStatus())
+                        .ifPresent(status -> this.memberStatus = status);
+        Optional.ofNullable(member.getAddress().getCity())
+                .ifPresent(this.address::changeCity);
+        Optional.ofNullable(member.getAddress().getStreet())
+                .ifPresent(this.address::changeStreet);
+        Optional.ofNullable(member.getAddress().getZipcode())
+                .ifPresent(this.address::changeZipcode);
     }
-
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),

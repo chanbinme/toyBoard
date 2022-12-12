@@ -1,12 +1,9 @@
 package hobin.toyBoard.comment.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import hobin.toyBoard.comment.entity.Comment;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 public class CommentDto {
 
@@ -18,7 +15,6 @@ public class CommentDto {
     }
 
     @Getter
-    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Patch {
         @NotBlank(message = "댓글이 공백이 아니어야 합니다.")
@@ -26,11 +22,17 @@ public class CommentDto {
     }
 
     @Getter
-    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
         private Long commentId;
         private String writer;
         private String content;
+
+        @Builder
+        public Response(Comment comment) {
+            this.commentId = comment.getCommentId();
+            this.writer = comment.getMember().getNickname();
+            this.content = comment.getContent();
+        }
     }
 }

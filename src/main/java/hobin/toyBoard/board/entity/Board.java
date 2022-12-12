@@ -10,6 +10,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -37,6 +38,7 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
+    // OphanRemoval이 적용할지 추후 확인
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Photo> photos = new ArrayList<>();
 
@@ -47,12 +49,13 @@ public class Board extends BaseTimeEntity {
         }
     }
 
-    public void changeTitle(String title) {
-        this.title = title;
+    public void changeBoard(String title, String content) {
+        Optional.ofNullable(title)
+                .ifPresent(changeTitle -> this.title = changeTitle);
+        Optional.ofNullable(content)
+                .ifPresent(changeContent -> this.content = changeContent);
     }
-    public void changeContent(String content) {
-        this.content = content;
-    }
+
 
     @Builder
     public Board(Long boardId, String title, String content, Member member, List<Comment> comments, List<Like> likes) {

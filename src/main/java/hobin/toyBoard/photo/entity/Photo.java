@@ -13,34 +13,36 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "file")
 public class Photo extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
-    @Column(name = "file_id")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PHOTO_ID")
+    private Long photoId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "BOARD_ID")
     private Board board;
 
     @Column(nullable = false)
     private String origFileName; // 원본 파일명
 
     @Column(nullable = false)
-    private String filepath; // 파일 저장 경로
+    private String filePath; // 파일 저장 경로
 
     private Long fileSize;
 
     @Builder
-    public Photo(String origFileName, String filepath, Long fileSize) {
+    public Photo(String origFileName, String filePath, Long fileSize) {
         this.origFileName = origFileName;
-        this.filepath = filepath;
+        this.filePath = filePath;
         this.fileSize = fileSize;
     }
 
     public void setBoard(Board board) {
         this.board = board;
+
+        if (!board.getPhotos().contains(this))
+            board.getPhotos().add(this);
     }
 }
