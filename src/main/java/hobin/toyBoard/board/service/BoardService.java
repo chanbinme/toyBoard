@@ -72,11 +72,11 @@ public class BoardService {
         return boardRepository.findAll(PageRequest.of(page - 1, size, Sort.by("boardId").descending()));
     }
 
-    public List<Board> findAllByMember(Long memberId) {
+    public Page<Board> findAllByMember(Long memberId, int page, int size) {
         memberService.findVerifiedMember(memberId);
-        List<Board> allByMemberMemberId = boardRepository.findAllByMemberMemberId(memberId);
-        System.out.println(allByMemberMemberId.toString());
-        return allByMemberMemberId;
+
+        return boardRepository.findAllByMemberMemberId(memberId,
+                PageRequest.of(page - 1, size, Sort.by("boardId").descending()));
     }
 
     @Transactional

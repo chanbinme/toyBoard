@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,11 +52,22 @@ public class CommentService {
                 Sort.by("commentId").descending()));
     }
 
+    public List<Comment> findAllByMember(Long memberId, int page, int size) {
+        memberService.findVerifiedMember(memberId);
+        return commentRepository.findAllByMemberMemberId(memberId,
+                PageRequest.of(page - 1, size, Sort.by("commentId").descending()));
+    }
+
+    public Page<Comment> findAllByBoard(Long boardId, int page, int size) {
+        boardService.findVerifiedBoard(boardId);
+        return commentRepository.findAllByBoardBoardId(boardId,
+                PageRequest.of(page - 1, size, Sort.by("commentId").descending()));
+    }
+
     @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.delete(findVerifiedComment(commentId));
     }
-
     public Comment findVerifiedComment(Long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
