@@ -58,6 +58,22 @@ public class CommentController {
         return new ResponseEntity<>(mapper.CommentsToCommentResponseDtos(findAll), HttpStatus.OK);
     }
 
+    @GetMapping("/bymember/{member-id}")
+    public ResponseEntity getCommentsByMember(@PathVariable("member-id") @Positive Long memberId,
+                                              @RequestParam("page") @Positive int page,
+                                              @RequestParam("size") @Positive int size) {
+        List<Comment> findAllByMember = commentService.findAllByMember(memberId, page, size);
+        return new ResponseEntity<>(mapper.CommentsToCommentResponseDtos(findAllByMember), HttpStatus.OK);
+    }
+
+    @GetMapping("/byboard/{board-id}")
+    public ResponseEntity getCommentsByBoard(@PathVariable("board-id") @Positive Long boardId,
+                                             @RequestParam("page") @Positive int page,
+                                             @RequestParam("size") @Positive int size) {
+        List<Comment> findAllByBoard = commentService.findAllByBoard(boardId, page, size).getContent();
+        return new ResponseEntity<>(mapper.CommentsToCommentResponseDtos(findAllByBoard), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{comment-id}")
     public ResponseEntity deleteComment(@PathVariable("comment-id") @Positive Long commentId) {
         commentService.deleteComment(commentId);

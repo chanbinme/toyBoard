@@ -55,17 +55,20 @@ public class BoardController {
         return new ResponseEntity<>(mapper.boardsToBoardResponses(findAll), HttpStatus.OK);
     }
 
-    @GetMapping("/bymember")
-    public ResponseEntity getBordsByMember(@RequestParam("memberId") @Positive Long memberId) {
-        List<Board> findAllByMember = boardService.findAllByMember(memberId);
+    @GetMapping("/bymember/{member-id}")
+    public ResponseEntity getBordsByMember(@PathVariable("member-id") @Positive Long memberId,
+                                           @RequestParam("page") @Positive int page,
+                                           @RequestParam("size") @Positive int size) {
+        List<Board> findAllByMember = boardService.findAllByMember(memberId, page, size).getContent();
 
         return new ResponseEntity<>(mapper.boardsToBoardResponses(findAllByMember), HttpStatus.OK);
     }
 
     @PatchMapping("/{board-id}")
     public ResponseEntity patchBoard(@PathVariable("board-id") @Positive Long boardId,
-                                     @RequestPart(value = "boardPatchDto") @Valid BoardDto.Patch boardPatchDto,
-                                     @RequestPart(value = "image") List<MultipartFile> files) throws Exception {
+                                     @RequestPart(value = "image") List<MultipartFile> files,
+                                     @RequestPart(value = "boardPatchDto") @Valid BoardDto.Patch boardPatchDto
+                                     ) throws Exception {
 
         boardPatchDto.setBoardId(boardId);
         Board saveBoard = boardService.updateBoard(mapper.boardPatchToBoard(boardPatchDto), files);
