@@ -23,6 +23,7 @@ import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,14 +53,14 @@ public class BoardService {
 
     @Transactional
     public Board updateBoard(Board board, List<MultipartFile> files) throws Exception {
+        Board findBoard = findVerifiedBoard(board.getBoardId());
         List<Photo> photoList = fileHandler.parseFileInfo(board, photoUpdate(board.getBoardId(), files));
 
         if (!photoList.isEmpty()) {
-            for (Photo photo : photoList) photoRepository.save(photo);
+            for (Photo photo : photoList) board.addPhoto(photoRepository.save(photo));
         }
 
-        Board findBoard = findVerifiedBoard(board.getBoardId());
-        findBoard.changeBoard(board.getTitle(), board.getContent());
+        findBoard.changeBoard(board.getTitle(), board.getContent(), board.getPhotos());
 
         return boardRepository.save(findBoard);
     }
@@ -112,19 +113,23 @@ public class BoardService {
                 // DB에 저장되어있는 파일 원본명 정리
                 List<String> dbFileOriginNames = new ArrayList<>();
 
-                for (Photo findPhoto : findPhotos) {
-                    Photo photo = photoService.findPhoto(findPhoto.getPhotoId());
+                // 파일의 원본명 얻어오기
+                List<String> multipartOrigNames = files.stream().map(MultipartFile::getOriginalFilename).collect(Collectors.toList());
 
+                for (Photo findPhoto : findPhotos) {
+
+                    dbFileOriginNames.add(findPhoto.getOrigFileName());
                     // DB에 저장된 파일들 중 전달된 파일이 존재하지 않으면
-                    if (!files.contains(photo.getOrigFileName()))
+                    if (!multipartOrigNames.contains(findPhoto.getOrigFileName())) {
                         photoService.deletePhoto(findPhoto.getPhotoId());   // 삭제
-                    else dbFileOriginNames.add(photo.getOrigFileName());    // 있으면 다시 저장
+                    }
+                    else dbFileOriginNames.add(findPhoto.getOrigFileName());    // 있으면 다시 저장
                 }
 
                 // 전달 받은 파일 하나씩 검사
                 for (MultipartFile multipartFile : files) {
-                    // 파일의 원본명 얻어오기
                     String multipartOrigName = multipartFile.getOriginalFilename();
+
                     // DB에 없는 파일이면 DB에 추가
                     if (!dbFileOriginNames.contains(multipartOrigName)) {
                         addFileList.add(multipartFile);

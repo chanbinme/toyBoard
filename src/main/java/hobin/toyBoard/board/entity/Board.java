@@ -49,11 +49,13 @@ public class Board extends BaseTimeEntity {
         }
     }
 
-    public void changeBoard(String title, String content) {
+    public void changeBoard(String title, String content, List<Photo> photos) {
         Optional.ofNullable(title)
                 .ifPresent(changeTitle -> this.title = changeTitle);
         Optional.ofNullable(content)
                 .ifPresent(changeContent -> this.content = changeContent);
+        Optional.ofNullable(photos)
+                .ifPresent(photos1 -> this.photos = photos);
     }
 
 

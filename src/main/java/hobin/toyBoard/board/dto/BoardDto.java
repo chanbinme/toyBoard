@@ -38,8 +38,6 @@ public class BoardDto {
     }
 
     @Getter
-//    @Builder
-//    @AllArgsConstructor
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Response {
         private Long boardId;
