@@ -35,7 +35,8 @@ dependencies {
 	//Spring Boot 기본값 (Spring Web)
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	//Lombok 사용
+    testImplementation 'junit:junit:4.13.1'
+    //Lombok 사용
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	//Validation

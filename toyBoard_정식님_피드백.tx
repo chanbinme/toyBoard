@@ -1,0 +1,73 @@
+찬빈님, 코드 잘 봤구요.
+일단 결론은.. 잘 하셨는데요?ㅎㅎ
+암튼 의견 간단히 남겨보겠습니다.
+
+* 잘한점
+1. 도메인 엔티티의 일을 도메인 엔티티에서 처리한 점 
+-> 이건 개인적으로 컨텐츠에 반영할지 말지 예전부터 고민하던건데 계속 고민해보겠습니다.ㅎ 반쪽짜리 DDD를 할 것이냐 DDD를 전부 할 것이냐 아니면 반쪽 짜리도 이 후 기수 학생들에게 소개를 할 것이냐..ㅎㅎ
+
+2. Address 같은 value object를 사용한 점
+
+* 개선했으면 하는 부분
+1. 엔티티 설계에서 엔티티 다이어그램은 객체 간의 참조로 표현하는게 좋을 것 같습니다. 
+1대N 관계이면 1에 해당하는 클래스가 N에 해당하는 컬렉션을 가지고 있도록.. 찬빈님도 이미 다 알고 있는부분이죠.ㅎ
+
+2. Entity의 수정해도 되고 안해도 되는 정보에서 계속해서 반복되는 Optiaon.ofNullable(..)
+--> JPA Solution 코드의 utils 패키지에 있는 CustomBeanUtils 같은 헬퍼 클래스로 간소화 시키는게 더 바람직해 보여요.
+
+3. Controller에서 도메인 엔티티의 가공 처리를 하는 부분을 도메인 영역에서 처리하는게 더 좋을 것 같습니다.
+Controller 영역은 어떤 가공처리를 하기 위한 영역은 아니거든요.ㅎ PhotoController의 findImage()도 비슷한 느낌의 코드 같습니다.
+예)
+`@PostMapping
+public ResponseEntity postMember(@Valid @RequestBody MemberDto.Post memberPostDto) {
+	Member member = mapper.memberPostDtoToMember(memberPostDto);
+	// 도메인 영역에서 처리하기
+	member.createAddress(memberPostDto.getCity(), memberPostDto.getStreet(), memberPostDto.getZipcode());
+	member.changeStatus(Member.MemberStatus.MEMBER_ACTIVE);  // 도메인 영역에서..
+	Member saveMember = memberService.createMember(member);
+
+	return new ResponseEntity<>(mapper.memberToMemberResponseDto(saveMember), HttpStatus.CREATED);
+}`
+
+4. PhotoController의 findImage()에서 이미지를 가져오는 부분과 BoardDto.Response를 확인해보니 느낌상 
+Frontend쪽에서 imageId 개수만큼 API call을 할 것 같던데 이것보다는 BoardDto.Response를 전송할 때 이미지 정보까지 
+한 번에 포함시켜서 전송하는게 좋지 않을까라는 생각이..
+
+5. postxxxx() 핸들러 메서드에서 리소르 생성 후, 생성된 리소스를 리턴하는 것이 아니라 생성된 리소스의 URI만 헤더에 포함시키
+
+6. REST API resource URI 표기 방식이 올바르지 않아보입니다.
+예)
+`@GetMapping("/bymember/{member-id}")
+public ResponseEntity getBordsByMember(@PathVariable("member-id") @Positive Long memberId,
+									   @RequestParam("page") @Positive int page,
+									   @RequestParam("size") @Positive int size) {
+	List<Board> findAllByMember = boardService.findAllByMember(memberId, page, size).getContent();
+
+	return new ResponseEntity<>(mapper.boardsToBoardResponses(findAllByMember), HttpStatus.OK);
+}`
+--> 특정 member의 모든 게시글을 조회하긴 용도인 것 같은데 이 경우, `/members/{member-id}/boards`가 되고 
+이 요청은 MemberController에서 처리하는 것이 논리적으로 맞습니다. MemberController는 Member에 대해서만 처리하면 되는게 아니냐라는 의문이 들 수 있지만
+REST API에서는 특정 resource가 소유하는 하위 리소스의 개념을 이런식으로 표현합니다. ^^
+
+7. 아래 코드 뭔가 좀 이상한데요? ^^;
+`@Transactional
+public Board createBoard(@Positive Long memberId, Board board, List<MultipartFile> files) throws Exception {
+	board.addMember(memberService.findMember(memberId));
+	List<Photo> photos = fileHandler.parseFileInfo(board, files);
+
+	// 파일이 존재할 때에만 처리
+	if (!photos.isEmpty()) {
+		for (Photo photo : photos) {
+			// 파일을 DB에 저장
+			board.addPhoto(photoRepository.save(photo));
+		}
+	}
+	return boardRepository.save(board);
+}`
+--> 우선 boardRepository.save(board)만 호출하면 photo 정보까지 cascade로 다 저장이 될 것 같은데요?
+
+8. FileHandler가 뭔가 말로 표현하기는 어렵지만 역할 구분이 제대로 안되어 보이는데요? ㅡㅡㅋ 
+DB에 저장할 Photo 정보를 파싱하면서 무언가 여러가지 일을 많이 하는 것 같고, DTO가 여기서 쓰이는 용도가 아닌데 보이는 것 같고. ^^;;
+
+9. 보안은 적용이 안되었다 가정했을 때, 지금 상황에서는 내가 아닌 다른 사람의 게시글도 마음대로 수정할 수 있을 것 같다는 생각이 듭니다.
+이걸 막는 로직이 적용이 안되어 있는 것 같은데 이 부분은 나중에 보완하면 좋을 것 같아요.
