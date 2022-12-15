@@ -1,14 +1,14 @@
 package hobin.toyBoard.photo.service;
 
 
+import hobin.toyBoard.board.repository.BoardRepository;
+import hobin.toyBoard.board.service.BoardService;
 import hobin.toyBoard.exception.BussinessLogicException;
 import hobin.toyBoard.exception.ExceptionCode;
 import hobin.toyBoard.photo.entity.Photo;
 import hobin.toyBoard.photo.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

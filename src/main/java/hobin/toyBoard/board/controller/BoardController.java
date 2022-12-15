@@ -66,7 +66,7 @@ public class BoardController {
 
     @PatchMapping("/{board-id}")
     public ResponseEntity patchBoard(@PathVariable("board-id") @Positive Long boardId,
-                                     @RequestPart(value = "image") List<MultipartFile> files,
+                                     @RequestPart(value = "image", required = false) List<MultipartFile> files,
                                      @RequestPart(value = "boardPatchDto") @Valid BoardDto.Patch boardPatchDto
                                      ) throws Exception {
 
